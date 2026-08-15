@@ -1,0 +1,57 @@
+Search Results for Instance: AgriGPT (Node.js) (nodejs)
+Pattern: (all logs)
+Project Root: c:\Users\Sneha\OneDrive\Desktop\AgriGPT
+Results: 50 (showing last 50, 0 more available)
+Timestamp: 2026-08-15T10:33:47.711Z
+================================================================================
+
+[Sat 15, 04:02:08 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 51.8% (404.2mb / 781.1mb)[0G
+[Sat 15, 04:02:10 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 52.3% (408.8mb / 781.1mb)[0G
+[Sat 15, 04:02:12 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 52.9% (413.4mb / 781.1mb)[0G
+[Sat 15, 04:02:14 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 53.5% (418mb / 781.1mb)[0G
+[Sat 15, 04:02:16 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 54.1% (422.5mb / 781.1mb)[0G
+[Sat 15, 04:02:18 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 54.7% (427mb / 781.1mb)[0G
+[Sat 15, 04:02:20 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 55.3% (431.6mb / 781.1mb)[0G
+[Sat 15, 04:02:22 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 55.8% (435.7mb / 781.1mb)[0G
+[Sat 15, 04:02:24 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 56.4% (440.2mb / 781.1mb)[0G
+[Sat 15, 04:02:26 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 56.9% (444.8mb / 781.1mb)[0G
+[Sat 15, 04:02:28 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 57.5% (449.1mb / 781.1mb)[0G
+[Sat 15, 04:02:30 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 58% (453.2mb / 781.1mb)[0G
+[Sat 15, 04:02:32 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 58.6% (457.8mb / 781.1mb)[0G
+[Sat 15, 04:02:34 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 59.2% (462.3mb / 781.1mb)[0G
+[Sat 15, 04:02:36 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 59.7% (466.3mb / 781.1mb)[0G
+[Sat 15, 04:02:38 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 60.3% (470.9mb / 781.1mb)[0G
+[Sat 15, 04:02:40 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 60.8% (475.3mb / 781.1mb)[0G
+[Sat 15, 04:02:42 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 61.4% (479.7mb / 781.1mb)[0G
+[Sat 15, 04:02:44 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 61.9% (483.7mb / 781.1mb)[0G
+[Sat 15, 04:02:46 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 62.5% (488.1mb / 781.1mb)[0G
+[Sat 15, 04:02:48 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 63.1% (492.7mb / 781.1mb)[0G
+[Sat 15, 04:02:50 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 63.6% (496.8mb / 781.1mb)[0G
+[Sat 15, 04:02:52 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 64.1% (501.1mb / 781.1mb)[0G
+[Sat 15, 04:02:54 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 64.7% (505.2mb / 781.1mb)[0G
+[Sat 15, 04:02:56 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 65.2% (509.4mb / 781.1mb)[0G
+[Sat 15, 04:02:58 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 65.8% (513.7mb / 781.1mb)[0G
+[Sat 15, 04:03:00 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 66.3% (518.1mb / 781.1mb)[0G
+[Sat 15, 04:03:02 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 66.9% (522.4mb / 781.1mb)[0G
+[Sat 15, 04:03:04 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 67.4% (526.8mb / 781.1mb)[0G
+[Sat 15, 04:03:06 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 68% (531mb / 781.1mb)[0G
+[Sat 15, 04:03:08 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 68.6% (535.5mb / 781.1mb)[0G
+[Sat 15, 04:03:10 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 69.1% (540.1mb / 781.1mb)[0G
+[Sat 15, 04:03:12 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 69.7% (544.7mb / 781.1mb)[0G
+[Sat 15, 04:03:14 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 70.3% (549.3mb / 781.1mb)[0G
+[Sat 15, 04:03:16 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 70.9% (553.8mb / 781.1mb)[0G
+[Sat 15, 04:03:18 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 71.5% (558.4mb / 781.1mb)[0G
+[Sat 15, 04:03:20 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 72.1% (563mb / 781.1mb)[0G
+[Sat 15, 04:03:22 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 72.7% (567.5mb / 781.1mb)[0G
+[Sat 15, 04:03:24 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 73.2% (572.1mb / 781.1mb)[0G
+[Sat 15, 04:03:26 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 73.8% (576.2mb / 781.1mb)[0G
+[Sat 15, 04:03:28 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 74.4% (580.8mb / 781.1mb)[0G
+[Sat 15, 04:03:30 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 74.9% (585mb / 781.1mb)[0G
+[Sat 15, 04:03:32 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 75.5% (589.5mb / 781.1mb)[0G
+[Sat 15, 04:03:34 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 76% (594mb / 781.1mb)[0G
+[Sat 15, 04:03:36 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 76.6% (598.4mb / 781.1mb)[0G
+[Sat 15, 04:03:38 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 77% (601.7mb / 781.1mb)[0G
+[Sat 15, 04:03:40 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 77.6% (606.3mb / 781.1mb)[0G
+[Sat 15, 04:03:42 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 78.2% (610.5mb / 781.1mb)[0G
+[Sat 15, 04:03:44 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 78.7% (614.9mb / 781.1mb)[0G
+[Sat 15, 04:03:46 pm] [INFO] [Node.js Tooling] Downloading MongoDB "8.2.6": 79.2% (618.9mb / 781.1mb)[0G

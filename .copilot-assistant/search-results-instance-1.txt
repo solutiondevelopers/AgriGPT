@@ -1,0 +1,23 @@
+Search Results for Instance: AgriGPT (Node.js) (nodejs)
+Pattern: (all logs)
+Project Root: c:\Users\Sneha\OneDrive\Desktop\AgriGPT\AgriGPT
+Results: 16
+Timestamp: 2026-08-15T09:12:38.184Z
+================================================================================
+
+[Sat 15, 02:42:20 pm] [INFO] [Extension] [INSTANCE] About to call startApplication with projectRoot=c:\Users\Sneha\OneDrive\Desktop\AgriGPT\AgriGPT, currentLanguage=nodejs
+[Sat 15, 02:42:20 pm] [DEBUG] [Development Process] [DEBUG] Language parameter: nodejs, Detected language: nodejs
+[Sat 15, 02:42:20 pm] [DEBUG] [Development Process] [DEBUG] Set currentConfig.name to: Node.js
+[Sat 15, 02:42:20 pm] [DEBUG] [Development Process] [MAVEN_DEBUG] About to call getRunCommand with language=nodejs, workspaceRoot=c:\Users\Sneha\OneDrive\Desktop\AgriGPT\AgriGPT
+[Sat 15, 02:42:20 pm] [DEBUG] [Development Process] [MAVEN_DEBUG] getRunCommand returned: npm start
+[Sat 15, 02:42:20 pm] [DEBUG] [Development Process] [DEBUG] Detected language: Node.js
+[Sat 15, 02:42:20 pm] [DEBUG] [Development Process] [DEBUG] Working directory: c:\Users\Sneha\OneDrive\Desktop\AgriGPT\AgriGPT
+[Sat 15, 02:42:20 pm] [DEBUG] [Development Process] [DEBUG] Command to execute: "C:\Program Files\nodejs\npm.cmd" start
+[Sat 15, 02:42:20 pm] [INFO] [Development Process] Starting Node.js process: "C:\Program Files\nodejs\npm.cmd" start
+[Sat 15, 02:42:20 pm] [DEBUG] [Development Process] Environment LOG_LEVEL set to: DEBUG
+[Sat 15, 02:42:20 pm] [DEBUG] [Development Process] [DEBUG] Spawn options - cwd: c:\Users\Sneha\OneDrive\Desktop\AgriGPT\AgriGPT
+[Sat 15, 02:42:20 pm] [DEBUG] [Development Process] [DEBUG] Spawn command: cmd.exe
+[Sat 15, 02:42:20 pm] [DEBUG] [Development Process] [DEBUG] Spawn args: [/d, /s, /c, cd /d "c:\Users\Sneha\OneDrive\Desktop\AgriGPT\AgriGPT" && "C:\Program Files\nodejs\npm.cmd" start]
+[Sat 15, 02:42:20 pm] [INFO] [Node.js] > react-example@0.0.0 start
+[Sat 15, 02:42:20 pm] [INFO] [Node.js] > node dist/server.cjs
+[Sat 15, 02:42:21 pm] [INFO] [Node.js] Server running on port 3000
