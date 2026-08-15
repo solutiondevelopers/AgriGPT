@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, User, Loader2, Paperclip, Mic, Sparkles, Bookmark, Copy, Download, RefreshCw, ChevronRight } from 'lucide-react';
-import { ChatMessage } from '../types';
+import { Send, User, Loader2, Paperclip, Mic, Sparkles, Bookmark, Copy, Download, RefreshCw, ChevronRight, AlertCircle } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { MessageRenderer } from '../components/MessageRenderer';
 import { motion, AnimatePresence } from 'motion/react';
+import { useChat } from '../contexts/ChatContext';
 
 const SUGGESTED_PROMPTS = [
   "Show my farm analytics",
@@ -14,16 +14,23 @@ const SUGGESTED_PROMPTS = [
 ];
 
 export function AdvisorChat() {
-  const [messages, setMessages] = useState<ChatMessage[]>([{
-    id: '1',
-    role: 'assistant',
-    content: "Hello! I'm AgriGPT, your conversational Agriculture Operating System. \n\nI can help you analyze weather, predict yields, compare market prices, or even buy supplies. What would you like to explore today?",
-    timestamp: new Date()
-  }]);
+  const { 
+    messages, 
+    sendMessage, 
+    isLoadingMessages, 
+    isSaving, 
+    saveError, 
+    clearCurrentChat, 
+    exportCurrentChat 
+  } = useChat();
+
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
   const [attachedImage, setAttachedImage] = useState<string | null>(null);
+  const [isListening, setIsListening] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -33,21 +40,7 @@ export function AdvisorChat() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isLoading]);
-
-  useEffect(() => {
-    const handleNewChat = () => {
-      setMessages([{
-        id: Date.now().toString(),
-        role: 'assistant',
-        content: "Hello! I'm AgriGPT, your conversational Agriculture Operating System. \n\nI can help you analyze weather, predict yields, compare market prices, or even buy supplies. What would you like to explore today?",
-        timestamp: new Date()
-      }]);
-    };
-    
-    window.addEventListener('new-chat', handleNewChat);
-    return () => window.removeEventListener('new-chat', handleNewChat);
-  }, []);
+  }, [messages, isSaving, isLoadingMessages]);
 
   const toggleBookmark = (id: string) => {
     setBookmarkedIds(prev => {
@@ -73,98 +66,23 @@ export function AdvisorChat() {
   };
 
   const handleSendPrompt = (prompt: string) => {
-    setInput(prompt);
-    // Focus the textarea or directly submit. We'll directly submit.
     submitMessage(prompt);
   };
 
   const submitMessage = async (text: string) => {
-    if (!text.trim() && !attachedImage || isLoading) return;
+    if ((!text.trim() && !attachedImage) || isSaving) return;
 
-    let contentToDisplay = text;
+    let attachments: Array<{ type: string; url: string }> | undefined;
     if (attachedImage) {
-      contentToDisplay = `![Attached Image](${attachedImage})\n\n${text}`;
+      attachments = [{ type: 'image', url: attachedImage }];
     }
 
-    const userMsg: ChatMessage = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: contentToDisplay,
-      timestamp: new Date()
-    };
-    
-    setMessages(prev => [...prev, userMsg]);
+    const textToSend = text;
     setInput('');
     setAttachedImage(null);
-    setIsLoading(true);
 
-    // Create a placeholder message for the assistant
-    const assistantId = (Date.now() + 1).toString();
-    setMessages(prev => [...prev, {
-      id: assistantId,
-      role: 'assistant',
-      content: '',
-      timestamp: new Date()
-    }]);
-
-    try {
-      const apiMessages = [...messages, userMsg].map(m => ({
-        role: m.role,
-        content: m.content
-      }));
-
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: apiMessages })
-      });
-
-      if (!response.ok) throw new Error('Failed to get response');
-      
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder('utf-8');
-      
-      if (reader) {
-        let isDone = false;
-        while (!isDone) {
-          const { value, done } = await reader.read();
-          isDone = done;
-          if (value) {
-            const chunkText = decoder.decode(value, { stream: true });
-            const lines = chunkText.split('\n');
-            for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                const dataStr = line.slice(6);
-                if (dataStr === '[DONE]') {
-                  isDone = true;
-                  break;
-                }
-                try {
-                  const data = JSON.parse(dataStr);
-                  if (data.text) {
-                    setMessages(prev => prev.map(m => 
-                      m.id === assistantId ? { ...m, content: m.content + data.text } : m
-                    ));
-                  }
-                } catch (e) {
-                  // ignore parse error for chunks
-                }
-              }
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Chat error:", error);
-      setMessages(prev => prev.map(m => 
-        m.id === assistantId ? { ...m, content: "**Error:** I'm having trouble connecting to my knowledge base right now. Please check your network or try again later." } : m
-      ));
-    } finally {
-      setIsLoading(false);
-    }
+    await sendMessage(textToSend, attachments);
   };
-
-  const [isListening, setIsListening] = useState(false);
 
   const toggleListen = () => {
     if (isListening) {
@@ -199,19 +117,6 @@ export function AdvisorChat() {
     submitMessage(input);
   };
 
-  const handleExport = () => {
-    const text = messages.map(m => `${m.role === 'user' ? 'You' : 'AgriGPT'}: ${m.content}`).join('\n\n');
-    const blob = new Blob([text], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'AgriGPT_Conversation.txt';
-    a.click();
-  };
-
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
   const filteredMessages = messages.filter(m => 
     m.content.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -225,7 +130,7 @@ export function AdvisorChat() {
             <div className="flex items-center bg-[#18181b]/90 backdrop-blur border border-zinc-700 rounded-lg overflow-hidden h-8">
               <input 
                 type="text" 
-                placeholder="Search chat..." 
+                placeholder="Search messages..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 autoFocus
@@ -247,107 +152,153 @@ export function AdvisorChat() {
         </div>
         <div className="pointer-events-auto flex gap-2">
           <button 
-            onClick={handleExport}
+            onClick={exportCurrentChat}
             className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 bg-[#18181b]/80 backdrop-blur border border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 rounded-lg transition-colors"
+            title="Export conversation"
           >
             <Download className="w-3.5 h-3.5" /> Export
           </button>
           <button 
-            onClick={() => setMessages([messages[0]])}
+            onClick={clearCurrentChat}
             className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 bg-[#18181b]/80 backdrop-blur border border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 rounded-lg transition-colors"
+            title="Start fresh conversation"
           >
             <RefreshCw className="w-3.5 h-3.5" /> Clear
           </button>
         </div>
       </div>
 
+      {/* Network / Saving Error Banner */}
+      {saveError && (
+        <div className="absolute top-14 left-4 right-4 z-20 max-w-xl mx-auto bg-red-900/80 border border-red-700/80 text-red-100 text-xs px-4 py-2 rounded-lg flex items-center justify-between shadow-lg">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-red-300" />
+            <span>{saveError}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Main Messages Container */}
       <div className="flex-1 overflow-y-auto scroll-smooth">
         <div className="max-w-3xl mx-auto w-full px-4 pt-16 pb-36 space-y-8">
-          <AnimatePresence initial={false}>
-            {filteredMessages.map((message) => (
-              <motion.div 
-                key={message.id} 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex gap-4"
-              >
-                <div className={cn(
-                  "w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5 border",
-                  message.role === 'user' ? "bg-zinc-800/80 border-zinc-700/50 text-zinc-300" : "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
-                )}>
-                  {message.role === 'user' ? <User className="w-4 h-4" /> : <Sparkles className="w-3.5 h-3.5" />}
+          
+          {isLoadingMessages ? (
+            <div className="space-y-6 pt-8">
+              <div className="flex gap-4 animate-pulse">
+                <div className="w-7 h-7 rounded-md bg-zinc-800" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-zinc-800 rounded w-1/4" />
+                  <div className="h-12 bg-zinc-800/60 rounded" />
                 </div>
-                
-                <div className="flex-1 min-w-0 group/message">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="text-sm font-semibold text-zinc-300">
-                      {message.role === 'user' ? 'You' : 'AgriGPT'}
-                    </div>
-                    <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover/message:opacity-100 transition-opacity">
-                      {message.role === 'assistant' && (
+              </div>
+              <div className="flex gap-4 animate-pulse">
+                <div className="w-7 h-7 rounded-md bg-zinc-800" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-zinc-800 rounded w-1/3" />
+                  <div className="h-16 bg-zinc-800/60 rounded" />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <AnimatePresence initial={false}>
+              {filteredMessages.map((message) => (
+                <motion.div 
+                  key={message.id} 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex gap-4"
+                >
+                  <div className={cn(
+                    "w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5 border",
+                    message.role === 'user' ? "bg-zinc-800/80 border-zinc-700/50 text-zinc-300" : "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
+                  )}>
+                    {message.role === 'user' ? <User className="w-4 h-4" /> : <Sparkles className="w-3.5 h-3.5" />}
+                  </div>
+                  
+                  <div className="flex-1 min-w-0 group/message">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="text-sm font-semibold text-zinc-300">
+                        {message.role === 'user' ? 'You' : 'AgriGPT'}
+                      </div>
+                      <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover/message:opacity-100 transition-opacity">
+                        {message.role === 'assistant' && (
+                          <button 
+                            className="p-1 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded transition-colors"
+                            title="Read aloud"
+                            onClick={() => {
+                              if ('speechSynthesis' in window) {
+                                const utterance = new SpeechSynthesisUtterance(message.content.replace(/```[\s\S]*?```/g, ''));
+                                window.speechSynthesis.speak(utterance);
+                              }
+                            }}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                          </button>
+                        )}
                         <button 
+                          onClick={() => navigator.clipboard.writeText(message.content)}
                           className="p-1 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded transition-colors"
-                          title="Read aloud"
-                          onClick={() => {
-                            if ('speechSynthesis' in window) {
-                              const utterance = new SpeechSynthesisUtterance(message.content.replace(/```[\s\S]*?```/g, ''));
-                              window.speechSynthesis.speak(utterance);
-                            }
-                          }}
+                          title="Copy message"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                          <Copy className="w-3.5 h-3.5" />
                         </button>
+                        <button 
+                          onClick={() => toggleBookmark(message.id)}
+                          className={cn("p-1 hover:bg-zinc-800 rounded transition-colors", bookmarkedIds.has(message.id) ? "text-emerald-500" : "text-zinc-500 hover:text-zinc-300")}
+                          title="Bookmark"
+                        >
+                          <Bookmark className={cn("w-3.5 h-3.5", bookmarkedIds.has(message.id) && "fill-current")} />
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="text-sm text-zinc-300 leading-relaxed space-y-2">
+                      {/* Attached images preview */}
+                      {message.attachments && message.attachments.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          {message.attachments.map((att, i) => (
+                            <img key={i} src={att.url} alt="User attachment" className="h-32 rounded-lg border border-zinc-700 object-cover" />
+                          ))}
+                        </div>
                       )}
-                      <button 
-                        onClick={() => navigator.clipboard.writeText(message.content)}
-                        className="p-1 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded transition-colors"
-                        title="Copy message"
-                      >
-                        <Copy className="w-3.5 h-3.5" />
-                      </button>
-                      <button 
-                        onClick={() => toggleBookmark(message.id)}
-                        className={cn("p-1 hover:bg-zinc-800 rounded transition-colors", bookmarkedIds.has(message.id) ? "text-emerald-500" : "text-zinc-500 hover:text-zinc-300")}
-                        title="Bookmark"
-                      >
-                        <Bookmark className={cn("w-3.5 h-3.5", bookmarkedIds.has(message.id) && "fill-current")} />
-                      </button>
+
+                      {message.role === 'user' ? (
+                        <div className="whitespace-pre-wrap font-medium text-zinc-100">{message.content}</div>
+                      ) : (
+                        <MessageRenderer content={message.content} onSelectFollowup={handleSendPrompt} />
+                      )}
                     </div>
                   </div>
-                  <div className="text-sm text-zinc-300 leading-relaxed">
-                    {message.role === 'user' ? (
-                      <div className="whitespace-pre-wrap font-medium text-zinc-100">{message.content}</div>
-                    ) : (
-                      <MessageRenderer content={message.content} onSelectFollowup={handleSendPrompt} />
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-            {isLoading && (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-4">
-                 <div className="w-7 h-7 rounded-md bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                   <Loader2 className="w-3.5 h-3.5 text-emerald-500 animate-spin" />
-                 </div>
-                 <div className="flex-1">
-                   <div className="text-sm font-semibold mb-1 text-zinc-300">AgriGPT</div>
-                   <div className="flex items-center gap-1.5 h-6">
-                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50 animate-bounce" style={{ animationDelay: '0ms' }} />
-                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50 animate-bounce" style={{ animationDelay: '150ms' }} />
-                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50 animate-bounce" style={{ animationDelay: '300ms' }} />
+                </motion.div>
+              ))}
+
+              {isSaving && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-4">
+                   <div className="w-7 h-7 rounded-md bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                     <Loader2 className="w-3.5 h-3.5 text-emerald-500 animate-spin" />
                    </div>
-                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                   <div className="flex-1">
+                     <div className="text-sm font-semibold mb-1 text-zinc-300">AgriGPT</div>
+                     <div className="flex items-center gap-1.5 h-6">
+                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50 animate-bounce" style={{ animationDelay: '0ms' }} />
+                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50 animate-bounce" style={{ animationDelay: '150ms' }} />
+                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50 animate-bounce" style={{ animationDelay: '300ms' }} />
+                       <span className="text-xs text-zinc-500 ml-2">Saving & analyzing...</span>
+                     </div>
+                   </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          )}
           <div ref={messagesEndRef} />
         </div>
       </div>
 
+      {/* Input Bar */}
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#09090b] via-[#09090b] to-transparent pt-12 pb-6 px-4">
         <div className="max-w-3xl mx-auto w-full relative">
           
-          {messages.length === 1 && (
+          {messages.length <= 1 && (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -389,7 +340,7 @@ export function AdvisorChat() {
               }}
               placeholder="Ask anything about your farm..."
               className="bg-transparent border-none text-sm flex-1 outline-none text-zinc-200 placeholder:text-zinc-500 min-h-[56px] max-h-40 resize-none py-4 px-4 scrollbar-thin"
-              disabled={isLoading}
+              disabled={isSaving}
               rows={1}
             />
             <div className="flex justify-between items-center px-2 pb-2">
@@ -405,7 +356,7 @@ export function AdvisorChat() {
                   type="button" 
                   onClick={() => fileInputRef.current?.click()}
                   className="p-1.5 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 rounded-md transition-colors" 
-                  title="Attach file"
+                  title="Attach image"
                 >
                   <Paperclip className="w-4 h-4" />
                 </button>
@@ -423,7 +374,7 @@ export function AdvisorChat() {
               </div>
               <button
                 type="submit"
-                disabled={(!input.trim() && !attachedImage) || isLoading}
+                disabled={(!input.trim() && !attachedImage) || isSaving}
                 className="w-8 h-8 flex items-center justify-center rounded-md bg-zinc-100 text-zinc-900 disabled:opacity-50 disabled:bg-zinc-800 disabled:text-zinc-500 hover:bg-white transition-colors"
               >
                 <Send className="w-4 h-4" />
@@ -431,7 +382,7 @@ export function AdvisorChat() {
             </div>
           </form>
           <div className="text-center mt-3">
-            <p className="text-[10px] text-zinc-500">AgriGPT can make mistakes. Verify critical farming decisions.</p>
+            <p className="text-[10px] text-zinc-500">AgriGPT automatically persists your conversation history safely.</p>
           </div>
         </div>
       </div>

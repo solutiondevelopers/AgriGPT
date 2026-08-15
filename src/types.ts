@@ -2,7 +2,21 @@ export type ChatMessage = {
   id: string;
   role: 'user' | 'assistant';
   content: string;
-  timestamp: Date;
+  timestamp: string | number | Date;
+  language?: 'en' | 'hi' | 'mr' | string;
+  attachments?: Array<{ type: string; url: string }>;
+  metadata?: Record<string, any>;
+};
+
+export type ChatSession = {
+  id: string;
+  userId: string;
+  title: string;
+  createdAt: string | number;
+  updatedAt: string | number;
+  language: 'en' | 'hi' | 'mr' | string;
+  lastMessage: string;
+  messageCount: number;
 };
 
 export type CropInsight = {

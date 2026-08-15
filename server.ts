@@ -12,16 +12,17 @@ async function startServer() {
   // API endpoints
   app.post("/api/chat", async (req, res) => {
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        return res.status(500).json({ error: "Gemini API key is not configured on the server." });
-      }
-
-      const ai = new GoogleGenAI({ apiKey });
       const { messages } = req.body;
 
       if (!messages || !Array.isArray(messages)) {
         return res.status(400).json({ error: "Invalid messages format." });
+      }
+
+      const openrouterKey = process.env.OPENROUTER_API_KEY || "";
+      const geminiKey = process.env.GEMINI_API_KEY;
+
+      if (!openrouterKey && !geminiKey) {
+        return res.status(500).json({ error: "Neither OpenRouter nor Gemini API key is configured on the server." });
       }
 
       const systemInstruction = `You are AgriGPT, an advanced AI Agriculture Copilot.
@@ -135,118 +136,208 @@ Always include conversational text explaining your reasoning, confidence level, 
 If the user asks for analytics (e.g. Revenue, Expenses, Yield, Water Usage, Fertilizer Usage, Market Trends, Weather Trends), automatically choose the best chart type (line, bar, pie, scatter, heatmap, calendar) and provide a chart block. For example, use a line chart for Revenue Trend, heatmap for Weekly Water Usage, pie chart for Expenses Breakdown, or scatter plot for Yield vs. Fertilizer.
 At the end of EVERY response, try to provide a followup block with 2-3 logical next questions the user might want to ask.`;
 
-      // Define available tools
-      const tools: any = [{
-        functionDeclarations: [
-          {
-            name: "get_weather",
-            description: "Get current weather and forecast for a location",
-            parameters: {
-              type: "OBJECT",
-              properties: {
-                location: {
-                  type: "STRING",
-                  description: "The city or region, e.g., 'Pune, Maharashtra'"
-                }
+      // Priority 1: OpenRouter API if key available
+      if (openrouterKey) {
+        const candidateModels = [
+          "openrouter/auto",
+          "google/gemini-2.0-flash-exp:free",
+          "google/gemini-flash-1.5",
+          "meta-llama/llama-3.3-70b-instruct:free",
+          "meta-llama/llama-3.3-70b-instruct",
+          "openai/gpt-4o-mini",
+          "deepseek/deepseek-chat"
+        ];
+
+        for (const modelName of candidateModels) {
+          try {
+            const openRouterRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${openrouterKey}`,
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://agrigpt.app",
+                "X-Title": "AgriGPT"
               },
-              required: ["location"]
-            }
-          },
-          {
-            name: "get_market_prices",
-            description: "Get current market prices for crops",
-            parameters: {
-              type: "OBJECT",
-              properties: {
-                crop: {
-                  type: "STRING",
-                  description: "The name of the crop, e.g., 'Wheat', 'Soybean'"
-                }
-              },
-              required: ["crop"]
-            }
-          }
-        ]
-      }];
-
-      // Format messages for Gemini API
-      let formattedMessages: any[] = messages.map((msg: any) => ({
-         role: msg.role === 'user' ? 'user' : 'model',
-         parts: [{ text: msg.content }]
-      }));
-
-      // To handle streaming properly with function calls:
-      // We will loop with regular generateContent for tool calls.
-      // Once it doesn't return tool calls, we will stream the final text.
-      
-      let isDone = false;
-      let finalStream = null;
-      let retries = 3;
-
-      while (!isDone && retries > 0) {
-        try {
-          const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: formattedMessages,
-            config: {
-               systemInstruction: systemInstruction,
-               tools: tools,
-            }
-          });
-
-          const functionCalls = response.functionCalls;
-          if (functionCalls && functionCalls.length > 0) {
-            formattedMessages.push({
-              role: "model",
-              parts: functionCalls.map(fc => ({ functionCall: fc }))
+              body: JSON.stringify({
+                model: modelName,
+                messages: [
+                  { role: "system", content: systemInstruction },
+                  ...messages.map((msg: any) => ({
+                    role: msg.role === "user" ? "user" : "assistant",
+                    content: msg.content
+                  }))
+                ],
+                stream: true
+              })
             });
 
-            const functionResponses = [];
-            for (const call of functionCalls) {
-              const name = call.name;
-              let result: any = { error: "Unknown tool" };
-              if (name === "get_weather") {
-                result = { temperature: "28°C", condition: "Partly Cloudy" };
-              } else if (name === "get_market_prices") {
-                result = { price: "$400 per ton", trend: "up 5%" };
+            if (openRouterRes.ok && openRouterRes.body) {
+              res.setHeader('Content-Type', 'text/event-stream');
+              res.setHeader('Cache-Control', 'no-cache');
+              res.setHeader('Connection', 'keep-alive');
+
+              const reader = (openRouterRes.body as any).getReader();
+              const decoder = new TextDecoder("utf-8");
+              let buffer = "";
+
+              while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split("\n");
+                buffer = lines.pop() || "";
+
+                for (const line of lines) {
+                  const trimmed = line.trim();
+                  if (!trimmed || trimmed.startsWith(":")) continue;
+                  if (trimmed === "data: [DONE]") {
+                    res.write(`data: [DONE]\n\n`);
+                    break;
+                  }
+                  if (trimmed.startsWith("data: ")) {
+                    try {
+                      const parsed = JSON.parse(trimmed.slice(6));
+                      const textChunk = parsed.choices?.[0]?.delta?.content;
+                      if (textChunk) {
+                        res.write(`data: ${JSON.stringify({ text: textChunk })}\n\n`);
+                      }
+                    } catch (e) {
+                      // ignore invalid json chunks
+                    }
+                  }
+                }
               }
-              functionResponses.push({
-                functionResponse: { name, response: result }
-              });
+              res.write(`data: [DONE]\n\n`);
+              return res.end();
+            } else {
+              const errText = await openRouterRes.text();
+              console.error(`OpenRouter model ${modelName} returned status ${openRouterRes.status}:`, errText);
             }
-            formattedMessages.push({ role: "user", parts: functionResponses });
-          } else {
-            isDone = true;
+          } catch (orErr) {
+            console.error(`OpenRouter fetch error with model ${modelName}:`, orErr);
           }
-        } catch (e: any) {
-          retries--;
-          if (retries === 0) throw e;
-          await new Promise(resolve => setTimeout(resolve, 2000));
         }
       }
 
-      // Now stream the final response
-      res.setHeader('Content-Type', 'text/event-stream');
-      res.setHeader('Cache-Control', 'no-cache');
-      res.setHeader('Connection', 'keep-alive');
+      // Priority 2 / Fallback: Gemini SDK
+      if (geminiKey) {
+        const ai = new GoogleGenAI({ apiKey: geminiKey });
 
-      try {
-        const stream = await ai.models.generateContentStream({
-          model: "gemini-2.5-flash",
-          contents: formattedMessages,
-          config: { systemInstruction: systemInstruction }
-        });
-        
-        for await (const chunk of stream) {
-          if (chunk.text) {
-            res.write(`data: ${JSON.stringify({ text: chunk.text })}\n\n`);
+        // Define available tools
+        const tools: any = [{
+          functionDeclarations: [
+            {
+              name: "get_weather",
+              description: "Get current weather and forecast for a location",
+              parameters: {
+                type: "OBJECT",
+                properties: {
+                  location: {
+                    type: "STRING",
+                    description: "The city or region, e.g., 'Pune, Maharashtra'"
+                  }
+                },
+                required: ["location"]
+              }
+            },
+            {
+              name: "get_market_prices",
+              description: "Get current market prices for crops",
+              parameters: {
+                type: "OBJECT",
+                properties: {
+                  crop: {
+                    type: "STRING",
+                    description: "The name of the crop, e.g., 'Wheat', 'Soybean'"
+                  }
+                },
+                required: ["crop"]
+              }
+            }
+          ]
+        }];
+
+        // Format messages for Gemini API
+        let formattedMessages: any[] = messages.map((msg: any) => ({
+           role: msg.role === 'user' ? 'user' : 'model',
+           parts: [{ text: msg.content }]
+        }));
+
+        let isDone = false;
+        let retries = 3;
+
+        while (!isDone && retries > 0) {
+          try {
+            const response = await ai.models.generateContent({
+              model: "gemini-2.0-flash",
+              contents: formattedMessages,
+              config: {
+                 systemInstruction: systemInstruction,
+                 tools: tools,
+              }
+            });
+
+            const functionCalls = response.functionCalls;
+            if (functionCalls && functionCalls.length > 0) {
+              formattedMessages.push({
+                role: "model",
+                parts: functionCalls.map(fc => ({ functionCall: fc }))
+              });
+
+              const functionResponses = [];
+              for (const call of functionCalls) {
+                const name = call.name;
+                let result: any = { error: "Unknown tool" };
+                if (name === "get_weather") {
+                  result = { temperature: "28°C", condition: "Partly Cloudy" };
+                } else if (name === "get_market_prices") {
+                  result = { price: "$400 per ton", trend: "up 5%" };
+                }
+                functionResponses.push({
+                  functionResponse: { name, response: result }
+                });
+              }
+              formattedMessages.push({ role: "user", parts: functionResponses });
+            } else {
+              isDone = true;
+            }
+          } catch (e: any) {
+            retries--;
+            if (retries === 0) throw e;
+            await new Promise(resolve => setTimeout(resolve, 2000));
           }
         }
-        res.write(`data: [DONE]\n\n`);
-        res.end();
-      } catch (error) {
-        res.write(`data: ${JSON.stringify({ error: "Stream failed" })}\n\n`);
-        res.end();
+
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+
+        try {
+          const stream = await ai.models.generateContentStream({
+            model: "gemini-2.0-flash",
+            contents: formattedMessages,
+            config: { systemInstruction: systemInstruction }
+          });
+          
+          for await (const chunk of stream) {
+            if (chunk.text) {
+              res.write(`data: ${JSON.stringify({ text: chunk.text })}\n\n`);
+            }
+          }
+          res.write(`data: [DONE]\n\n`);
+          return res.end();
+        } catch (error) {
+          if (!res.headersSent) {
+            return res.status(500).json({ error: "Stream failed" });
+          } else {
+            res.write(`data: ${JSON.stringify({ error: "Stream failed" })}\n\n`);
+            return res.end();
+          }
+        }
+      }
+
+      if (!res.headersSent) {
+        return res.status(500).json({ error: "Unable to generate AI response from available providers." });
       }
     } catch (error: any) {
       console.error("Error in /api/chat:", error);

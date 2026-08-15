@@ -8,10 +8,13 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { AdvisorChat } from './pages/AdvisorChat';
 import { AnalyticsDashboard } from './pages/AnalyticsDashboard';
+import { WeatherDashboard } from './pages/WeatherDashboard';
 import { ThreeDView } from './pages/ThreeDView';
 import { AgroStore } from './pages/AgroStore';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
+import { LanguageProvider } from './contexts/LanguageContext';
+import { ChatProvider } from './contexts/ChatContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
@@ -23,8 +26,10 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
+      <LanguageProvider>
+        <ChatProvider>
+          <CartProvider>
+            <BrowserRouter>
           {isBooting ? (
             <LoadingPage 
               autoRedirect={true} 
@@ -43,13 +48,16 @@ export default function App() {
                   <Route path="3d-view" element={<ThreeDView />} />
                   <Route path="store" element={<AgroStore />} />
                   <Route path="analytics" element={<AnalyticsDashboard />} />
+                  <Route path="weather" element={<WeatherDashboard />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               </Route>
             </Routes>
           )}
         </BrowserRouter>
-      </CartProvider>
+          </CartProvider>
+        </ChatProvider>
+      </LanguageProvider>
     </AuthProvider>
   );
 }

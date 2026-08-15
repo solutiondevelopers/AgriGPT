@@ -21,6 +21,10 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const getUserIdFromEmail = (email: string): string => {
+  return 'usr_' + email.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,7 +36,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const storedUser = localStorage.getItem('agrigpt_user');
         if (storedUser) {
-          setUser(JSON.parse(storedUser));
+          const parsed = JSON.parse(storedUser);
+          // Ensure deterministic user ID based on email
+          if (parsed && parsed.email) {
+            parsed.id = getUserIdFromEmail(parsed.email);
+            localStorage.setItem('agrigpt_user', JSON.stringify(parsed));
+          }
+          setUser(parsed);
         }
       } catch (error) {
         console.error("Session check failed", error);
@@ -46,10 +56,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password?: string) => {
     setIsLoading(true);
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 500));
     
+    const userId = getUserIdFromEmail(email);
     const mockUser: User = {
-      id: 'usr_' + Math.random().toString(36).substring(2, 9),
+      id: userId,
       email,
       name: email.split('@')[0],
       role: 'farmer'

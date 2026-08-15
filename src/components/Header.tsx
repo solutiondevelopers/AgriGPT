@@ -2,6 +2,7 @@ import React from 'react';
 import { Bell, Search, Menu, ChevronDown, User, LogOut, ShoppingCart, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
   const { user, logout } = useAuth();
@@ -33,6 +34,8 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
       </div>
       
       <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+        <LanguageSwitcher />
+
         <button
           onClick={openCopilot}
           className="flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg text-xs font-bold transition-all"
