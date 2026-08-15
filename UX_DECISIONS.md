@@ -13,7 +13,7 @@ AgriGPT adopts a **Conversation-First OS** paradigm. The UI minimizes traditiona
 ## 3. Core Components & Layout
 *   **The App Shell:** A flexible flexbox layout consisting of a collapsible sidebar and a main viewport.
 *   **Collapsible Sidebar:** Houses chat history, new analysis triggers, and secondary navigation. It can be hidden to provide a distraction-free, full-width canvas for deep analysis.
-*   **Top Navigation:** Functions as a contextual breadcrumb trail. It indicates the current model (e.g., "Gemini 2.5 Pro") and houses global actions (Notifications, Profile), keeping the chat area clean.
+*   **Top Navigation:** Functions as a contextual breadcrumb trail. It indicates the current model (e.g., "AgriGPT Pro") and houses global actions (Notifications, Profile), keeping the chat area clean.
 *   **Main Chat Canvas:** Centered and constrained (e.g., `max-w-3xl`) for optimal reading length. Messages are styled as distinct conversational blocks rather than tight chat bubbles, allowing rich visual components (charts, cards) to breathe.
 *   **Floating Chat Input:** Anchored to the bottom of the screen with a gradient fade (`bg-gradient-to-t`) behind it. This ensures the input is always accessible without interrupting the reading flow of the chat history. It expands dynamically based on content.
 

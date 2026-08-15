@@ -9,7 +9,7 @@ graph TD
     Gateway --> FastAPI[Backend: FastAPI Microservices]
     
     FastAPI --> Agent[AI Orchestrator: LangChain / MCP]
-    Agent --> Gemini[Google Gemini API]
+    Agent --> LLM[AgriGPT AI Engine]
     Agent --> RAG[Vector DB / RAG Engine]
     Agent --> Vision[TensorFlow / Vision Models]
     
@@ -23,7 +23,7 @@ graph TD
 
 *   **Frontend (Next.js, React, Tailwind, Shadcn UI):** A single-page conversational interface. Manages chat state, renders dynamic UI blocks (charts, weather cards, product lists) via custom Markdown rendering.
 *   **Backend (FastAPI, Python):** High-performance, async backend handling routing, business logic, and security.
-*   **AI Orchestrator (LangChain, Gemini API, MCP):** The "brain" of the OS. Interprets user intent, plans tasks, and decides which tools/APIs to invoke.
+*   **AI Orchestrator (LangChain, MCP):** The "brain" of the OS. Interprets user intent, plans tasks, and decides which tools/APIs to invoke.
 *   **Database (Firebase Firestore):** NoSQL document database storing user profiles, farm records, chat history, and inventory.
 *   **Storage (Firebase Storage):** Object storage for crop images, reports (PDF/Excel), and user uploads.
 
@@ -31,7 +31,7 @@ graph TD
 
 1.  **User Input:** User sends a message ("Compare soybean and wheat profit") via the chat interface.
 2.  **Request Handling:** The Next.js frontend sends the query to the FastAPI backend.
-3.  **Intent Classification & Orchestration:** The AI Agent (powered by Gemini) analyzes the query.
+3.  **Intent Classification & Orchestration:** The AI Agent analyzes the query.
 4.  **Tool Execution:** The Agent identifies the need for market data and yield predictions. It executes parallel calls to the Market API and the Farm Analytics service.
 5.  **Synthesis:** The Agent synthesizes the retrieved data, formats a conversational response, and constructs a JSON visual block (e.g., ````json:chart`).
 6.  **Response Rendering:** The frontend parses the response, displaying the text explanation and dynamically rendering a comparison bar chart.
@@ -49,7 +49,7 @@ AgriGPT relies on an **Agentic Framework** utilizing ReAct (Reasoning and Acting
 *   **Authentication:** Firebase Auth handles JWT token generation (Email, Google Auth).
 *   **Authorization:** Role-Based Access Control (RBAC) enforced at the FastAPI middleware layer (Farmer, Expert, Admin).
 *   **Data Security:** Firestore Security Rules ensure users can only access their own farm data.
-*   **API Security:** All external API keys (Gemini, Maps, Weather) are stored securely in GCP Secret Manager and accessed only by the backend.
+*   **API Security:** All external API keys (Maps, Weather) are stored securely and accessed only by the backend.
 
 ## 6. Cloud & Deployment Architecture
 

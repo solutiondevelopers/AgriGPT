@@ -20,7 +20,7 @@ import { useNavigate } from 'react-router-dom';
 
 const SYSTEM_STAGES = [
   { id: 1, title: 'Initializing Core Neural Engine', desc: 'Loading AgriGPT multi-modal AI models', icon: Cpu },
-  { id: 2, title: 'Connecting Gemini 2.5 Pro', desc: 'Establishing secure high-throughput inference channel', icon: Sparkles },
+  { id: 2, title: 'Connecting AgriGPT AI Engine', desc: 'Establishing secure high-throughput inference channel', icon: Sparkles },
   { id: 3, title: 'Syncing Satellite & Soil Telemetry', desc: 'Fetching micro-climate weather & NPK soil metrics', icon: Globe },
   { id: 4, title: 'Calibrating Crop Analytics OS', desc: 'Building personalized yield optimization models', icon: BarChart2 },
 ];
@@ -373,7 +373,7 @@ export function LoadingPage({
         {/* Footer copyright / badge */}
         <div className="text-center text-[11px] text-zinc-500 mt-3 flex items-center justify-center gap-2">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-          <span>Powered by Google Gemini 2.5 Pro & AgriGPT OS • Encrypted & Secure Session</span>
+          <span>Powered by AgriGPT AI Engine • Encrypted & Secure Session</span>
         </div>
       </div>
     </div>

@@ -27,7 +27,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
           <span className="text-zinc-100 font-bold tracking-tight">AgriGPT OS</span>
           <span className="text-zinc-700 hidden sm:inline">/</span>
           <button className="hidden sm:flex items-center gap-1.5 text-zinc-300 font-medium hover:bg-zinc-800/50 px-2 py-1 rounded-md transition-colors text-xs">
-            Gemini 2.5 Pro <ChevronDown className="w-3 h-3 text-zinc-500" />
+            AgriGPT Pro <ChevronDown className="w-3 h-3 text-zinc-500" />
           </button>
         </div>
       </div>

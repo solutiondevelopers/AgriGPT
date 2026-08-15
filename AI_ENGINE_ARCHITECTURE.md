@@ -4,7 +4,7 @@ This document explains the architecture and implementation strategy for AgriGPT'
 
 ## 1. Core Concepts
 
-AgriGPT is powered by an **Agentic Framework** leveraging the Gemini 2.5 Pro model. Instead of a hardcoded state machine, the AI acts as an autonomous agent capable of reasoning, planning, and executing actions via external tools.
+AgriGPT is powered by an **Agentic Framework** leveraging advanced large language models. Instead of a hardcoded state machine, the AI acts as an autonomous agent capable of reasoning, planning, and executing actions via external tools.
 
 ### Intent Detection & Reasoning
 *   **ReAct Pattern:** The agent uses the Reason-and-Act (ReAct) methodology. When a user asks "Compare soybean and wheat profit", the AI reasons: *I need to fetch the current market prices for soybean and wheat, then I need to fetch the projected yield data for the user's region, and then I need to compare them.*
