@@ -93,7 +93,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
         >
           <ShoppingCart className="w-4 h-4" />
           {cartItemCount > 0 && (
-            <span className="absolute top-1 right-1 w-4 h-4 bg-emerald-500 rounded-full text-[10px] font-bold text-zinc-950 flex items-center justify-center">
+            <span className="absolute top-1 right-1 w-4 h-4 bg-emerald-600 rounded-full text-[10px] font-bold text-white flex items-center justify-center">
               {cartItemCount}
             </span>
           )}

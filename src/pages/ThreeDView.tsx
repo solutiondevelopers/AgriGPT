@@ -753,7 +753,7 @@ export function ThreeDView() {
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-50 text-slate-900 overflow-hidden relative">
       {/* Top Header Control Ribbon */}
-      <div className="min-h-14 bg-[#121215] border-b border-slate-200/80 px-3 md:px-6 py-4 min-h-[56px] text-lg min-h-[48px] flex flex-col md:flex-row items-start md:items-center justify-between gap-2 z-20 shrink-0">
+      <div className="min-h-14 bg-white border-b border-slate-200 px-3 md:px-6 py-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 z-20 shrink-0 shadow-xs">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0">
             <Box className="w-4 h-4" />
@@ -761,7 +761,7 @@ export function ThreeDView() {
           <div>
             <h1 className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-2 flex-wrap">
               Digital Twin 3D Farm Studio
-              <span className="text-[9px] sm:text-[10px] font-semibold bg-emerald-100 text-emerald-300 border border-emerald-200 px-2 py-0.5 rounded-full">
+              <span className="text-[9px] sm:text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">
                 Three.js WebGL Engine
               </span>
             </h1>
@@ -771,35 +771,35 @@ export function ThreeDView() {
 
         <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 scrollbar-none">
           {/* Layer Selection */}
-          <div className="flex items-center bg-white border border-slate-200 rounded-lg p-1 shrink-0">
+          <div className="flex items-center bg-slate-100 border border-slate-200 rounded-lg p-1 shrink-0">
             <button
               onClick={() => setActiveLayer('standard')}
-              className={`px-6 py-4 min-h-[56px] text-lg min-h-[48px] min-h-[44px] text-sm font-semibold font-medium rounded-md transition-colors ${
-                activeLayer === 'standard' ? 'bg-emerald-500 text-zinc-950 font-bold' : 'text-slate-600 hover:text-slate-800'
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                activeLayer === 'standard' ? 'bg-emerald-600 text-white font-bold shadow-xs' : 'text-slate-700 hover:text-slate-900'
               }`}
             >
               Standard 3D
             </button>
             <button
               onClick={() => setActiveLayer('moisture')}
-              className={`px-6 py-4 min-h-[56px] text-lg min-h-[48px] min-h-[44px] text-sm font-semibold font-medium rounded-md transition-colors ${
-                activeLayer === 'moisture' ? 'bg-sky-500 text-zinc-950 font-bold' : 'text-slate-600 hover:text-slate-800'
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                activeLayer === 'moisture' ? 'bg-sky-600 text-white font-bold shadow-xs' : 'text-slate-700 hover:text-slate-900'
               }`}
             >
               Soil Moisture
             </button>
             <button
               onClick={() => setActiveLayer('ndvi')}
-              className={`px-6 py-4 min-h-[56px] text-lg min-h-[48px] min-h-[44px] text-sm font-semibold font-medium rounded-md transition-colors ${
-                activeLayer === 'ndvi' ? 'bg-emerald-400 text-zinc-950 font-bold' : 'text-slate-600 hover:text-slate-800'
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                activeLayer === 'ndvi' ? 'bg-emerald-600 text-white font-bold shadow-xs' : 'text-slate-700 hover:text-slate-900'
               }`}
             >
               NDVI Canopy
             </button>
             <button
               onClick={() => setActiveLayer('thermal')}
-              className={`px-6 py-4 min-h-[56px] text-lg min-h-[48px] min-h-[44px] text-sm font-semibold font-medium rounded-md transition-colors ${
-                activeLayer === 'thermal' ? 'bg-rose-500 text-zinc-950 font-bold' : 'text-slate-600 hover:text-slate-800'
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                activeLayer === 'thermal' ? 'bg-rose-600 text-white font-bold shadow-xs' : 'text-slate-700 hover:text-slate-900'
               }`}
             >
               Thermal Heat

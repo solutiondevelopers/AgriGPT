@@ -211,7 +211,7 @@ export function AgroStore() {
               addToCart({ id: 'prod-1', name: 'AgroNitrogen+ Bio-Fertilizer (50kg)', price: 3800, supplier: 'BioAgri Tech Corp' });
               addToCart({ id: 'prod-3', name: 'AgriGPT IoT Wireless Soil Sensor Node', price: 9999, supplier: 'AgriGPT Robotics' });
             }}
-            className="px-6 py-4 min-h-[56px] text-lg min-h-[48px].5 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-sm font-semibold rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-2 transition-all shrink-0"
+            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 flex items-center gap-2 transition-all shrink-0"
           >
             Add AI Recommended Bundle ($164.00)
             <ArrowRight className="w-4 h-4" />
@@ -227,10 +227,10 @@ export function AgroStore() {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3.5 py-1.5 text-sm font-semibold font-medium rounded-xl whitespace-nowrap transition-all ${
+                className={`px-3.5 py-1.5 text-sm font-semibold rounded-xl whitespace-nowrap transition-all ${
                   selectedCategory === cat 
-                    ? 'bg-emerald-500 text-zinc-950 font-bold shadow-md shadow-emerald-500/20' 
-                    : 'bg-white/80 text-slate-600 hover:bg-slate-100 hover:text-slate-800'
+                    ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' 
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
                 }`}
               >
                 {cat}
@@ -444,7 +444,7 @@ export function AgroStore() {
                       });
                       setSelectedProduct(null);
                     }}
-                    className="px-8 py-4 min-h-[56px] text-lg bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-sm font-semibold rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-2 transition-all"
+                    className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md shadow-emerald-600/20 flex items-center gap-2 transition-all"
                   >
                     <ShoppingCart className="w-4 h-4" />
                     Add to Cart

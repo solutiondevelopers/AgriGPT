@@ -248,10 +248,10 @@ export function CopilotDrawer() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-5 right-5 z-40 flex items-center gap-2.5 px-4 py-4 min-h-[56px] text-lg bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold rounded-full shadow-[0_0_25px_rgba(16,185,129,0.4)] transition-all transform hover:scale-105 active:scale-95"
+            className="fixed bottom-5 right-5 z-40 flex items-center gap-2.5 px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-full shadow-lg shadow-emerald-600/30 transition-all transform hover:scale-105 active:scale-95"
             title="Open AgriGPT Embedded AI Assistant"
           >
-            <Sparkles className="w-5 h-5 text-zinc-950 animate-pulse" />
+            <Sparkles className="w-5 h-5 text-emerald-200 animate-pulse" />
             <span className="text-xs sm:text-sm tracking-tight font-extrabold">Ask AgriGPT</span>
             <span className="w-2 h-2 rounded-full bg-slate-50 animate-ping" />
           </motion.button>
@@ -266,16 +266,16 @@ export function CopilotDrawer() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-            className={`fixed inset-y-0 right-0 z-50 bg-[#0c0c0e] border-l border-slate-200 shadow-2xl flex flex-col transition-all duration-300 ${
+            className={`fixed inset-y-0 right-0 z-50 bg-slate-50 border-l border-slate-200 shadow-2xl flex flex-col transition-all duration-300 ${
               isExpanded 
                 ? 'w-full md:w-[650px]' 
                 : 'w-full sm:w-[420px]'
             }`}
           >
             {/* Drawer Header */}
-            <div className="h-14 bg-[#121215] border-b border-slate-200/80 px-4 flex items-center justify-between shrink-0">
+            <div className="h-14 bg-white border-b border-slate-200 px-4 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-600">
+                <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
@@ -306,15 +306,15 @@ export function CopilotDrawer() {
             </div>
 
             {/* Context Prompt Chips Header Ribbon */}
-            <div className="px-5 py-4 min-h-[56px] text-lg min-h-[48px] bg-slate-50/80 border-b border-slate-200/60 overflow-x-auto scrollbar-none flex items-center gap-1.5 shrink-0">
-              <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
+            <div className="px-3 py-2.5 bg-slate-100/80 border-b border-slate-200 overflow-x-auto scrollbar-none flex items-center gap-1.5 shrink-0">
+              <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
                 <Bot className="w-3 h-3" /> Page Insights:
               </span>
               {getContextPrompts().map((prompt, idx) => (
                 <button
                   key={idx}
                   onClick={() => submitMessage(prompt)}
-                  className="text-[10px] whitespace-nowrap px-2.5 py-1 bg-white hover:bg-emerald-950/40 hover:border-emerald-500/50 border border-slate-200 text-slate-700 rounded-full transition-all shrink-0"
+                  className="text-[10px] whitespace-nowrap px-2.5 py-1 bg-white hover:bg-emerald-50 hover:border-emerald-300 border border-slate-200 text-slate-800 font-medium rounded-full transition-all shrink-0 shadow-xs"
                 >
                   {prompt}
                 </button>
@@ -329,7 +329,7 @@ export function CopilotDrawer() {
                   className={`flex gap-2.5 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {msg.role === 'assistant' && (
-                    <div className="w-7 h-7 rounded-lg bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0 mt-0.5">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0 mt-0.5">
                       <Bot className="w-4 h-4" />
                     </div>
                   )}
@@ -337,8 +337,8 @@ export function CopilotDrawer() {
                   <div
                     className={`max-w-[85%] rounded-2xl p-3 text-xs sm:text-sm leading-relaxed ${
                       msg.role === 'user'
-                        ? 'bg-gradient-to-r from-emerald-600 to-teal-500 shadow-md shadow-emerald-500/20 text-zinc-950 font-medium rounded-tr-none'
-                        : 'bg-white/90 border border-slate-200/80 text-slate-800 rounded-tl-none shadow-md'
+                        ? 'bg-emerald-600 text-white font-medium rounded-tr-none shadow-md'
+                        : 'bg-white border border-slate-200 text-slate-900 rounded-tl-none shadow-md'
                     }`}
                   >
                     {msg.role === 'assistant' ? (

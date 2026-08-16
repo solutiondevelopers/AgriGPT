@@ -172,9 +172,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="p-3">
           <button 
             onClick={handleNewChatClick}
-            className="w-full flex items-center justify-center gap-2 px-5 py-4 min-h-[56px] text-lg  bg-zinc-100 text-zinc-900 rounded-lg text-xs font-semibold hover:bg-white transition-colors shadow-sm"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-600/20"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4" />
             {t('nav.newChat')}
           </button>
         </div>

@@ -633,13 +633,13 @@ export function WeatherDashboard() {
             <div className="flex bg-white border border-slate-300/70 rounded-xl p-1 text-xs font-semibold">
               <button
                 onClick={() => setUnit('C')}
-                className={cn("px-2.5 py-1 rounded-lg transition-all", unit === 'C' ? "bg-emerald-500 text-zinc-950 font-bold" : "text-slate-600 hover:text-slate-800")}
+                className={cn("px-2.5 py-1 rounded-lg transition-all", unit === 'C' ? "bg-emerald-600 text-white font-bold" : "text-slate-700 hover:text-slate-900")}
               >
                 °C
               </button>
               <button
                 onClick={() => setUnit('F')}
-                className={cn("px-2.5 py-1 rounded-lg transition-all", unit === 'F' ? "bg-emerald-500 text-zinc-950 font-bold" : "text-slate-600 hover:text-slate-800")}
+                className={cn("px-2.5 py-1 rounded-lg transition-all", unit === 'F' ? "bg-emerald-600 text-white font-bold" : "text-slate-700 hover:text-slate-900")}
               >
                 °F
               </button>
@@ -870,25 +870,25 @@ export function WeatherDashboard() {
                 <div className="flex bg-white border border-slate-200 p-1 rounded-xl text-xs gap-1">
                   <button
                     onClick={() => setHourlyView('temp')}
-                    className={cn("px-2.5 py-1 rounded-lg transition-all font-medium", hourlyView === 'temp' ? "bg-emerald-500 text-zinc-950 font-bold" : "text-slate-600 hover:text-slate-800")}
+                    className={cn("px-2.5 py-1 rounded-lg transition-all font-medium", hourlyView === 'temp' ? "bg-emerald-600 text-white font-bold" : "text-slate-700 hover:text-slate-900")}
                   >
                     Temperature
                   </button>
                   <button
                     onClick={() => setHourlyView('precip')}
-                    className={cn("px-2.5 py-1 rounded-lg transition-all font-medium", hourlyView === 'precip' ? "bg-emerald-500 text-zinc-950 font-bold" : "text-slate-600 hover:text-slate-800")}
+                    className={cn("px-2.5 py-1 rounded-lg transition-all font-medium", hourlyView === 'precip' ? "bg-emerald-600 text-white font-bold" : "text-slate-700 hover:text-slate-900")}
                   >
                     Rain Prob (%)
                   </button>
                   <button
                     onClick={() => setHourlyView('wind')}
-                    className={cn("px-2.5 py-1 rounded-lg transition-all font-medium", hourlyView === 'wind' ? "bg-emerald-500 text-zinc-950 font-bold" : "text-slate-600 hover:text-slate-800")}
+                    className={cn("px-2.5 py-1 rounded-lg transition-all font-medium", hourlyView === 'wind' ? "bg-emerald-600 text-white font-bold" : "text-slate-700 hover:text-slate-900")}
                   >
                     Wind Speed
                   </button>
                   <button
                     onClick={() => setHourlyView('soil')}
-                    className={cn("px-2.5 py-1 rounded-lg transition-all font-medium", hourlyView === 'soil' ? "bg-emerald-500 text-zinc-950 font-bold" : "text-slate-600 hover:text-slate-800")}
+                    className={cn("px-2.5 py-1 rounded-lg transition-all font-medium", hourlyView === 'soil' ? "bg-emerald-600 text-white font-bold" : "text-slate-700 hover:text-slate-900")}
                   >
                     Soil Telemetry
                   </button>

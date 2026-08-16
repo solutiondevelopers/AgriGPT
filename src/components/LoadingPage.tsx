@@ -207,7 +207,7 @@ export function LoadingPage({
           />
 
           {/* Central Glowing Shield Icon */}
-          <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-b from-zinc-800 to-zinc-900 border border-emerald-500/40 flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.25)]">
+          <div className="relative w-20 h-20 rounded-2xl bg-white border border-emerald-200 flex items-center justify-center shadow-lg shadow-emerald-500/10">
             <motion.div
               animate={{ scale: [0.95, 1.05, 0.95] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -268,14 +268,14 @@ export function LoadingPage({
                 key={stage.id}
                 className={`p-3 rounded-xl border text-left transition-all duration-300 ${
                   isDone 
-                    ? 'bg-emerald-950/20 border-emerald-200 text-emerald-300' 
+                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
                     : isCurrent 
                     ? 'bg-slate-100 border-emerald-500/60 text-slate-900 ring-1 ring-emerald-500/30' 
                     : 'bg-white/40 border-slate-200/60 text-slate-400'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
-                  <StageIcon className={`w-4 h-4 ${isDone ? 'text-emerald-600' : isCurrent ? 'text-emerald-300 animate-pulse' : 'text-slate-400'}`} />
+                  <StageIcon className={`w-4 h-4 ${isDone ? 'text-emerald-600' : isCurrent ? 'text-emerald-600 animate-pulse' : 'text-slate-400'}`} />
                   {isDone ? (
                     <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                   ) : isCurrent ? (
@@ -303,7 +303,7 @@ export function LoadingPage({
                 if (onComplete) onComplete();
                 else navigate(targetPath);
               }}
-              className="px-6 py-4 min-h-[56px] text-lg min-h-[48px] bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-2 transition-all transform hover:-translate-y-0.5"
+              className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md shadow-emerald-600/20 flex items-center gap-2 transition-all transform hover:-translate-y-0.5"
             >
               Enter AgriGPT Dashboard
               <ChevronRight className="w-4 h-4" />

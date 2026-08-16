@@ -704,7 +704,7 @@ export function DiseaseScan() {
                   <div key={s.step} className="flex items-center gap-3 text-xs">
                     <div className={cn(
                       "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border transition-all",
-                      isDone ? "bg-emerald-500 text-zinc-950 border-emerald-400" :
+                      isDone ? "bg-emerald-600 text-white border-emerald-600" :
                       isCurrent ? "bg-emerald-100 border-emerald-500 text-emerald-600 animate-bounce" :
                       "bg-slate-100 border-slate-300 text-slate-500"
                     )}>
