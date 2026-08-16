@@ -219,90 +219,11 @@ At the end of EVERY response, try to provide a followup block with 2-3 logical n
       if (geminiKey) {
         const ai = new GoogleGenAI({ apiKey: geminiKey });
 
-        // Define available tools
-        const tools: any = [{
-          functionDeclarations: [
-            {
-              name: "get_weather",
-              description: "Get current weather and forecast for a location",
-              parameters: {
-                type: "OBJECT",
-                properties: {
-                  location: {
-                    type: "STRING",
-                    description: "The city or region, e.g., 'Pune, Maharashtra'"
-                  }
-                },
-                required: ["location"]
-              }
-            },
-            {
-              name: "get_market_prices",
-              description: "Get current market prices for crops",
-              parameters: {
-                type: "OBJECT",
-                properties: {
-                  crop: {
-                    type: "STRING",
-                    description: "The name of the crop, e.g., 'Wheat', 'Soybean'"
-                  }
-                },
-                required: ["crop"]
-              }
-            }
-          ]
-        }];
-
         // Format messages for Gemini API
         let formattedMessages: any[] = messages.map((msg: any) => ({
            role: msg.role === 'user' ? 'user' : 'model',
            parts: [{ text: msg.content }]
         }));
-
-        let isDone = false;
-        let retries = 3;
-
-        while (!isDone && retries > 0) {
-          try {
-            const response = await ai.models.generateContent({
-              model: "gemini-3.1-flash-lite",
-              contents: formattedMessages,
-              config: {
-                 systemInstruction: systemInstruction,
-                 tools: tools,
-              }
-            });
-
-            const functionCalls = response.functionCalls;
-            if (functionCalls && functionCalls.length > 0) {
-              formattedMessages.push({
-                role: "model",
-                parts: functionCalls.map(fc => ({ functionCall: fc }))
-              });
-
-              const functionResponses = [];
-              for (const call of functionCalls) {
-                const name = call.name;
-                let result: any = { error: "Unknown tool" };
-                if (name === "get_weather") {
-                  result = { temperature: "28°C", condition: "Partly Cloudy" };
-                } else if (name === "get_market_prices") {
-                  result = { price: "₹33,500 per ton", trend: "up 5%" };
-                }
-                functionResponses.push({
-                  functionResponse: { name, response: result }
-                });
-              }
-              formattedMessages.push({ role: "user", parts: functionResponses });
-            } else {
-              isDone = true;
-            }
-          } catch (e: any) {
-            retries--;
-            if (retries === 0) throw e;
-            await new Promise(resolve => setTimeout(resolve, 2000));
-          }
-        }
 
         res.setHeader('Content-Type', 'text/event-stream');
         res.setHeader('Cache-Control', 'no-cache');
@@ -322,9 +243,10 @@ At the end of EVERY response, try to provide a followup block with 2-3 logical n
           }
           res.write(`data: [DONE]\n\n`);
           return res.end();
-        } catch (error) {
+        } catch (error: any) {
+          console.error("Gemini stream error:", error);
           if (!res.headersSent) {
-            return res.status(500).json({ error: "Stream failed" });
+            return res.status(500).json({ error: "Stream failed: " + error.message });
           } else {
             res.write(`data: ${JSON.stringify({ error: "Stream failed" })}\n\n`);
             return res.end();
