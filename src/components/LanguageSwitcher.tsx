@@ -72,10 +72,10 @@ export function LanguageSwitcher({ variant = 'header', className = '' }: Languag
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="language-menu-button"
-          className="absolute right-0 mt-1.5 w-48 rounded-xl bg-[#121215] border border-slate-200 shadow-xl shadow-black/50 py-1.5 z-50 focus:outline-none animate-in fade-in slide-in-from-top-2 duration-150"
+          className="absolute right-0 mt-1.5 w-52 rounded-xl bg-white border border-slate-200 shadow-xl py-1.5 z-50 focus:outline-none animate-in fade-in slide-in-from-top-2 duration-150"
         >
-          <div className="px-3 py-1.5 border-b border-slate-200/60 mb-1">
-            <p className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase">
+          <div className="px-3 py-1.5 border-b border-slate-100 mb-1">
+            <p className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
               Select Language / भाषा चुनें
             </p>
           </div>
@@ -91,18 +91,18 @@ export function LanguageSwitcher({ variant = 'header', className = '' }: Languag
                   onClick={() => handleSelect(lang.code)}
                   className={`w-full text-left flex items-center justify-between px-2.5 py-2 rounded-lg text-xs transition-colors duration-150 ${
                     isSelected
-                      ? 'bg-emerald-50 text-emerald-600 font-semibold border border-emerald-500/20'
-                      : 'text-slate-700 hover:bg-slate-100/60 hover:text-slate-900'
+                      ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-200'
+                      : 'text-slate-800 hover:bg-slate-50 hover:text-slate-900 font-medium'
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="w-5 text-center text-[11px] font-mono font-bold text-slate-600 group-hover:text-slate-800 bg-slate-100 rounded px-1 py-0.5">
+                    <span className="w-5 text-center text-[11px] font-mono font-bold text-slate-700 bg-slate-100 border border-slate-200 rounded px-1 py-0.5">
                       {lang.shortLabel}
                     </span>
                     <div className="flex flex-col">
-                      <span className="text-xs leading-none font-medium">{lang.nativeName}</span>
+                      <span className="text-xs leading-none font-bold text-slate-900">{lang.nativeName}</span>
                       {lang.nativeName !== lang.name && (
-                        <span className="text-[10px] text-slate-500 leading-tight mt-0.5">
+                        <span className="text-[10px] text-slate-500 leading-tight mt-0.5 font-medium">
                           {lang.name}
                         </span>
                       )}
