@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import path from "path";
 import { GoogleGenAI } from "@google/genai";
@@ -289,7 +290,32 @@ At the end of EVERY response, try to provide a followup block with 2-3 logical n
                 const name = call.name;
                 let result: any = { error: "Unknown tool" };
                 if (name === "get_weather") {
-                  result = { temperature: "28°C", condition: "Partly Cloudy" };
+                  try {
+                    const location = call.args?.location || "Pune";
+                    // 1. Get coordinates using Open-Meteo geocoding API
+                    const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1`);
+                    const geoData = await geoRes.json();
+                    
+                    if (geoData.results && geoData.results.length > 0) {
+                      const { latitude, longitude, name: locName } = geoData.results[0];
+                      // 2. Get live weather using Open-Meteo forecast API
+                      const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m`);
+                      const weatherData = await weatherRes.json();
+                      const current = weatherData.current;
+                      
+                      result = { 
+                        location: locName,
+                        temperature: `${current.temperature_2m}°C`,
+                        humidity: `${current.relative_humidity_2m}%`,
+                        windSpeed: `${current.wind_speed_10m} km/h`,
+                        condition: "Live Data Fetched"
+                      };
+                    } else {
+                      result = { error: "Location not found" };
+                    }
+                  } catch(err) {
+                    result = { temperature: "28°C", condition: "Partly Cloudy (Mock - Live API Failed)" };
+                  }
                 } else if (name === "get_market_prices") {
                   result = { price: "$400 per ton", trend: "up 5%" };
                 }

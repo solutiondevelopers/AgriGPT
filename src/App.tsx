@@ -11,6 +11,7 @@ import { AnalyticsDashboard } from './pages/AnalyticsDashboard';
 import { WeatherDashboard } from './pages/WeatherDashboard';
 import { ThreeDView } from './pages/ThreeDView';
 import { AgroStore } from './pages/AgroStore';
+import { DiseaseScan } from './pages/DiseaseScan';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -49,6 +50,7 @@ export default function App() {
                   <Route path="store" element={<AgroStore />} />
                   <Route path="analytics" element={<AnalyticsDashboard />} />
                   <Route path="weather" element={<WeatherDashboard />} />
+                  <Route path="scan" element={<DiseaseScan />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               </Route>
