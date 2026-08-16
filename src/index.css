@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Custom Sleek Dark Scrollbars - Remove bright white lines */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Utility classes */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+body { 
+  overscroll-behavior-y: none; 
+  color: #0f172a;
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Global text legibility and contrast enhancements */
+h1, h2, h3, h4, h5, h6 {
+  color: #020617 !important;
+  font-weight: 700 !important;
+}
+
+p, span, label, li, td, th {
+  color: #0f172a;
+}
+
+/* Prevent washed out text colors */
+.text-slate-400, .text-zinc-400, .text-gray-400 {
+  color: #475569 !important;
+}
+
+.text-slate-500, .text-zinc-500, .text-gray-500 {
+  color: #334155 !important;
+}
+
+.text-slate-600, .text-zinc-600, .text-gray-600 {
+  color: #1e293b !important;
+}
+
+/* Make placeholders readable */
+::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+/* Highlighted badges and cards */
+.prose {
+  color: #0f172a !important;
+}
+
+.prose p, .prose li {
+  color: #0f172a !important;
+  font-weight: 500 !important;
+}
+
+.prose strong {
+  color: #020617 !important;
+  font-weight: 700 !important;
+}
